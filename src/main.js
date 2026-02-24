@@ -288,7 +288,9 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
-		if (OCA.Onlyoffice.context !== null && !OCA.Onlyoffice.Desktop) {
+		if (OCA.Onlyoffice.context !== null
+			&& document.querySelector('.onlyoffice-iframe-container')
+			&& !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
