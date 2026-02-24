@@ -311,7 +311,9 @@ import { loadState } from '@nextcloud/initial-state'
 	OCA.Onlyoffice.FileClickExec = async function({ nodes, view, dir, isDefault = true }) {
 		const file = nodes[0]
 
-		if (OCA.Onlyoffice.context !== null && !OCA.Onlyoffice.Desktop) {
+		if (OCA.Onlyoffice.context !== null
+			&& document.querySelector('.onlyoffice-iframe-container')
+			&& !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
