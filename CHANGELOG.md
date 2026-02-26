@@ -1,5 +1,9 @@
 # Change Log
 
+## 10.0.0
+## Changed
+- compatible with Nextcloud 33
+
 ## 9.13.0
 ## Changed
 - support formats DocumentServer v9.3

@@ -32,6 +32,7 @@ import { spawnDialog } from '@nextcloud/vue/functions/dialog'
 import { getRequestToken } from '@nextcloud/auth'
 import { generateFilePath } from '@nextcloud/router'
 import { defineAsyncComponent } from 'vue'
+import SystemTagsService from './systemtags.js'
 
 /**
  * @param {object} $ JQueryStatic object
@@ -123,24 +124,24 @@ import { defineAsyncComponent } from 'vue'
 							placeholder: t(OCA.Onlyoffice.AppName, 'Select tag'),
 							query: _.debounce(function(query) {
 								query.callback({
-									results: OC.SystemTags.collection.filterByName(query.term),
+									results: SystemTagsService.filterByName(query.term),
 								})
 							}, 100, true),
 							initSelection(element, callback) {
 								const selection = ($(element).val() || []).split('|').map(function(tagId) {
-									return OC.SystemTags.collection.get(tagId)
-								})
+									return SystemTagsService.get(tagId)
+								}).filter(Boolean)
 								callback(selection)
 							},
 							formatResult(tag) {
-								return OC.SystemTags.getDescriptiveTag(tag)
+								return SystemTagsService.getDescriptiveTag(tag)
 							},
 							formatSelection(tag) {
-								return tag.get('name')
+								return tag.name
 							},
 							sortResults(results) {
 								results.sort(function(a, b) {
-									return OC.Util.naturalSortCompare(a.get('name'), b.get('name'))
+									return OC.Util.naturalSortCompare(a.name, b.name)
 								})
 								return results
 							},
@@ -159,15 +160,13 @@ import { defineAsyncComponent } from 'vue'
 			watermarkNodeBehaviour(watermarkGroup)
 		})
 
-		if (OC.SystemTags && OC.SystemTags.collection) {
-			OC.SystemTags.collection.fetch({
-				success() {
-					$.each(watermarkTagLists, function(i, watermarkTag) {
-						watermarkNodeBehaviour(watermarkTag)
-					})
-				},
+		SystemTagsService.fetch().then(function() {
+			$.each(watermarkTagLists, function(i, watermarkTag) {
+				watermarkNodeBehaviour(watermarkTag)
 			})
-		}
+		}).catch(function(error) {
+			console.error('Failed to load system tags:', error)
+		})
 
 		const connectionError = document.getElementById('onlyofficeSettingsState').value
 		if (connectionError !== '') {
