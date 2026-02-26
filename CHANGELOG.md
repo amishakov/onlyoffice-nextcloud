@@ -3,6 +3,10 @@
 ##
 ## Changed
 - compatible with Nextcloud 33
+
+## 9.13.0
+## Changed
+- support formats DocumentServer v9.3
 - fixed watermark not applying to link shares with system tags
 - fixed opening the editor with a watermark on tagged files
 - replace deprecated TemplateFileCreator::setIconClass with TemplateFileCreator::setIconSvgInline method
