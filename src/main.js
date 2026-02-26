@@ -33,7 +33,6 @@
 
 import {
 	File,
-	FileAction,
 	getSidebar,
 	registerFileAction,
 	Permission,
@@ -250,10 +249,12 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.SetDefaultUrl = function() {
+		// eslint-disable-next-line no-unused-vars
+		const { openfile, enableSharing, ...query } = OCP.Files.Router.query
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
-			{ ...OCP.Files.Router.query, openfile: undefined, enableSharing: undefined },
+			query,
 		)
 	}
 
@@ -310,7 +311,9 @@ import { loadState } from '@nextcloud/initial-state'
 	OCA.Onlyoffice.FileClickExec = async function({ nodes, view, dir, isDefault = true }) {
 		const file = nodes[0]
 
-		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.Desktop) {
+		if (OCA.Onlyoffice.context !== null
+			&& document.querySelector('.onlyoffice-iframe-container')
+			&& !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 
@@ -590,7 +593,7 @@ import { loadState } from '@nextcloud/initial-state'
 				})
 			})
 		} else {
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-open-def',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -608,9 +611,9 @@ import { loadState } from '@nextcloud/initial-state'
 				exec: OCA.Onlyoffice.FileClickExec,
 				default: DefaultType.HIDDEN,
 				order: -1,
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-open',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Open in ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -627,9 +630,9 @@ import { loadState } from '@nextcloud/initial-state'
 				exec({ nodes, view, dir }) {
 					OCA.Onlyoffice.FileClickExec({ nodes, view, dir, isDefault: false })
 				},
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-convert',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Convert with ONLYOFFICE'),
 				iconSvgInline: () => AppDarkSvg,
@@ -653,9 +656,9 @@ import { loadState } from '@nextcloud/initial-state'
 					return true
 				},
 				exec: OCA.Onlyoffice.FileConvertClickExec,
-			}))
+			})
 
-			registerFileAction(new FileAction({
+			registerFileAction({
 				id: 'onlyoffice-create-form',
 				displayName: () => t(OCA.Onlyoffice.AppName, 'Create form'),
 				iconSvgInline: () => AppDarkSvg,
@@ -679,10 +682,10 @@ import { loadState } from '@nextcloud/initial-state'
 					return true
 				},
 				exec: OCA.Onlyoffice.CreateFormClickExec,
-			}))
+			})
 
 			if (!isPublicShare()) {
-				registerFileAction(new FileAction({
+				registerFileAction({
 					id: 'onlyoffice-download-as',
 					displayName: () => t(OCA.Onlyoffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
@@ -706,7 +709,7 @@ import { loadState } from '@nextcloud/initial-state'
 						return true
 					},
 					exec: OCA.Onlyoffice.DownloadClickExec,
-				}))
+				})
 			}
 		}
 	}
