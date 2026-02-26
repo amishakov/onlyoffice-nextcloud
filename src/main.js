@@ -1,6 +1,6 @@
 /**
  *
- * (c) Copyright Ascensio System SIA 2025
+ * (c) Copyright Ascensio System SIA 2026
  *
  * This program is a free software product.
  * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
@@ -217,10 +217,17 @@ import { loadState } from '@nextcloud/initial-state'
 			const scrollTop = $('#app-content').scrollTop()
 			$(OCA.Onlyoffice.frameSelector).css('top', scrollTop)
 
+			const currentQuery = { ...OCP.Files.Router.query }
+			if (isDefault) {
+				currentQuery.openfile = 'true'
+			} else {
+				delete currentQuery.openfile
+			}
+
 			window.OCP?.Files?.Router?.goToRoute(
 				null, // use default route
 				{ view: 'files', fileid: fileId },
-				{ ...OCP.Files.Router.query, openfile: 'true' },
+				currentQuery,
 			)
 		}
 	}
@@ -239,10 +246,12 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.SetDefaultUrl = function() {
+		// eslint-disable-next-line no-unused-vars
+		const { openfile, enableSharing, ...query } = OCP.Files.Router.query
 		window.OCP?.Files?.Router?.goToRoute(
 			null, // use default route
 			{ view: 'files', fileid: undefined },
-			{ ...OCP.Files.Router.query, openfile: 'false', enableSharing: undefined },
+			query,
 		)
 	}
 
@@ -279,7 +288,9 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.Onlyoffice.FileClickExec = async function(file, view, dir, isDefault = true) {
-		if (OCA.Onlyoffice.context !== null && OCA.Onlyoffice.setting.sameTab && !OCA.Onlyoffice.Desktop) {
+		if (OCA.Onlyoffice.context !== null
+			&& document.querySelector('.onlyoffice-iframe-container')
+			&& !OCA.Onlyoffice.Desktop) {
 			return null
 		}
 

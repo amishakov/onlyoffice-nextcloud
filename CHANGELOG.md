@@ -1,5 +1,14 @@
 # Change Log
 
+## 9.13.0
+## Changed
+- support formats DocumentServer v9.3
+- fixed watermark not applying to link shares with system tags
+- fixed opening the editor with a watermark on tagged files
+- replace deprecated TemplateFileCreator::setIconClass with TemplateFileCreator::setIconSvgInline method
+- OCA\Onlyoffice\Preview class now implements OCP\Preview\IProviderV2 interface
+- fixed invalid IManager::getSharesBy() method call when building share list for advanced sidebar tab
+
 ## 9.12.0
 ## Added
 - plugin description and useful links in admin settings
